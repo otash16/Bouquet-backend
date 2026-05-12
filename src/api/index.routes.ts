@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import dashboardRoutes from './dashboard/index.routes.ts';
 import clientRoutes from './client/index.routes.ts';
+import dashboardRoutes from './dashboard/index.routes.ts';
 
 const router = Router();
 

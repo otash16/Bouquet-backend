@@ -4,11 +4,7 @@ import cookieParser from 'cookie-parser';
 import express, { type Application } from 'express';
 import indexRouter from './api/index.routes.ts';
 import { cors, logger } from './config/index.ts';
-import {
-  errorHandler,
-  notFoundHandler,
-  responseHandler,
-} from './middlewares/index.ts';
+import { errorHandler, notFoundHandler, responseHandler } from './middlewares/index.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
