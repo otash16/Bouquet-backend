@@ -5,6 +5,7 @@ import { UnauthorizedError } from '../../../errors/index.ts';
 import * as AdminAuthService from '../../shared/services/adminAuth.service.ts';
 import * as AdminService from './admin.service.ts';
 import type {
+  TChangePasswordDto,
   TCreateAdminDto,
   TDeleteAdminDto,
   TGetAdminByIdDto,
@@ -101,6 +102,17 @@ export const info = async (req: Request, res: Response) => {
     shopName: admin.shop?.translations[0]?.name ?? null,
     createdAt: admin.createdAt,
   });
+};
+
+export const changePassword = async (req: Request, res: Response) => {
+  const { currentPassword, newPassword } = req.validated.body as TChangePasswordDto['body'];
+  await AdminService.changePassword(req.admin!.adminId, currentPassword, newPassword);
+  res.success(HttpStatus.Ok, { message: 'Password changed successfully' });
+};
+
+export const getSessions = async (req: Request, res: Response) => {
+  const response = await AdminService.getSessions(req.admin!.adminId);
+  res.success(HttpStatus.Ok, response);
 };
 
 // ===== CRUD =====

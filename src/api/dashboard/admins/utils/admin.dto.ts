@@ -63,6 +63,14 @@ export const deleteAdminDto = z.object({
   }),
 });
 
+export const changePasswordDto = z.object({
+  body: z.object({
+    currentPassword: z.string().min(1, 'Current password is required'),
+    newPassword: passwordSchema,
+  }),
+});
+
+export type TChangePasswordDto = z.infer<typeof changePasswordDto>;
 export type TSigninDto = z.infer<typeof signinDto>;
 export type TCreateAdminDto = z.infer<typeof createAdminDto>;
 export type TUpdateAdminDto = z.infer<typeof updateAdminDto>;

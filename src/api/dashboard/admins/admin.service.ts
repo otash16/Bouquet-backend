@@ -1,8 +1,8 @@
 import bcrypt from 'bcryptjs';
 import { db } from '../../../config/index.ts';
 import { ErrorCodes, ErrorMessages } from '../../../constants/index.ts';
-import { ForbiddenError, NotFoundError } from '../../../errors/index.ts';
-import { hashPassword } from '../../../utilities/index.ts';
+import { BadRequestError, ForbiddenError, NotFoundError } from '../../../errors/index.ts';
+import { comparePasswords, hashPassword } from '../../../utilities/index.ts';
 import { buildPagination, buildPaginationResponse, buildSort } from '../../../utilities/index.ts';
 import type { Prisma } from '../../shared/types/prisma.types.ts';
 import type { TCreateAdminDto, TGetAdminsDto, TUpdateAdminDto } from './utils/admin.dto.ts';
@@ -160,4 +160,45 @@ export const deleteAdmin = async (id: string, currentAdminId: string) => {
   });
 
   return true;
+};
+
+export const changePassword = async (adminId: string, currentPassword: string, newPassword: string) => {
+  const admin = await db.admin.findUnique({
+    where: { id: adminId, deletedAt: null },
+    select: { passwordHash: true },
+  });
+
+  if (!admin) {
+    throw new NotFoundError(ErrorMessages.AdminNotFound, ErrorCodes.AdminNotFound);
+  }
+
+  const isValid = await comparePasswords(currentPassword, admin.passwordHash);
+  if (!isValid) {
+    throw new BadRequestError('Joriy parol noto\'g\'ri');
+  }
+
+  const newHash = await hashPassword(newPassword);
+  await db.admin.update({
+    where: { id: adminId },
+    data: { passwordHash: newHash },
+  });
+
+  return true;
+};
+
+export const getSessions = async (adminId: string) => {
+  const sessions = await db.adminSession.findMany({
+    where: { adminId, deletedAt: null },
+    select: {
+      id: true,
+      ipAddress: true,
+      userAgent: true,
+      status: true,
+      lastActiveAt: true,
+      createdAt: true,
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  return sessions;
 };
