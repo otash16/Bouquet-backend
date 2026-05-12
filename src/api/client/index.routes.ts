@@ -1,10 +1,11 @@
 import { Router } from 'express';
+import categoryRoutes from './categories/category.routes.ts';
 
 const router = Router();
 
-// Client routes — Telegram Mini App users uchun
+router.use('/categories', categoryRoutes);
+
 // router.use('/shops', shopRoutes);
 // router.use('/flowers', flowerRoutes);
-// router.use('/categories', categoryRoutes);
 
 export default router;
