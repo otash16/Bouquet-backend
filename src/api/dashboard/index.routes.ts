@@ -6,6 +6,7 @@ import flowerRoutes from './flowers/flower.routes.ts';
 import shopRoutes from './shops/shop.routes.ts';
 import subscriptionRoutes from './subscriptions/subscription.routes.ts';
 import tariffRoutes from './tariffs/tariff.routes.ts';
+import uploadRoutes from './upload/upload.routes.ts';
 
 const router = Router();
 
@@ -19,5 +20,6 @@ router.use('/shops', shopRoutes);
 router.use('/flowers', flowerRoutes);
 router.use('/tariffs', tariffRoutes);
 router.use('/subscriptions', subscriptionRoutes);
+router.use('/upload', uploadRoutes);
 
 export default router;
