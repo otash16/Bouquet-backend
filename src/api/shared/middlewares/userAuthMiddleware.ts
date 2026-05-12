@@ -91,6 +91,7 @@ export default async (req: Request, _res: Response, next: NextFunction) => {
         }
 
         req.user = { id: user.id, language: user.language };
+        db.userVisit.create({ data: { userId: user.id, userAgent: req.get('user-agent') ?? null } }).catch(() => {});
         return next();
       }
 
@@ -126,6 +127,15 @@ export default async (req: Request, _res: Response, next: NextFunction) => {
     }
 
     req.user = { id: user.id, language: user.language };
+
+    // Visit yozish (async, kutmaymiz)
+    db.userVisit.create({
+      data: {
+        userId: user.id,
+        userAgent: req.get('user-agent') ?? null,
+      },
+    }).catch(() => {});
+
     next();
   } catch (error) {
     next(error);

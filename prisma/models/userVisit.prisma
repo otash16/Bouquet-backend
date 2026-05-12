@@ -1,0 +1,11 @@
+model UserVisit {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  userAgent String?  @map("user_agent")
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([createdAt(sort: Desc)])
+  @@map("user_visits")
+}
