@@ -1,9 +1,19 @@
 import type { Request, Response } from 'express';
-import { env } from '../../../config/index.ts';
+import { db, env } from '../../../config/index.ts';
 import { Environment, HttpStatus } from '../../../constants/index.ts';
 import { UnauthorizedError } from '../../../errors/index.ts';
 import * as AdminAuthService from '../../shared/services/adminAuth.service.ts';
-import type { TSigninDto } from './utils/admin.dto.ts';
+import * as AdminService from './admin.service.ts';
+import type {
+  TCreateAdminDto,
+  TDeleteAdminDto,
+  TGetAdminByIdDto,
+  TGetAdminsDto,
+  TSigninDto,
+  TUpdateAdminDto,
+} from './utils/admin.dto.ts';
+
+// ===== AUTH =====
 
 export const signin = async (req: Request, res: Response) => {
   const { username, password } = req.validated.body as TSigninDto['body'];
@@ -52,7 +62,7 @@ export const info = async (req: Request, res: Response) => {
     throw new UnauthorizedError();
   }
 
-  const admin = await (await import('../../../config/index.ts')).db.admin.findUnique({
+  const admin = await db.admin.findUnique({
     where: { id: req.admin.adminId, deletedAt: null },
     select: {
       id: true,
@@ -89,4 +99,43 @@ export const info = async (req: Request, res: Response) => {
     shopName: admin.shop?.translations[0]?.name ?? null,
     createdAt: admin.createdAt,
   });
+};
+
+// ===== CRUD =====
+
+export const getAdmins = async (req: Request, res: Response) => {
+  const response = await AdminService.getAdmins(
+    req.validated.query as TGetAdminsDto['query'],
+    req.admin!.adminId
+  );
+  res.success(HttpStatus.Ok, response);
+};
+
+export const getAdminById = async (req: Request, res: Response) => {
+  const response = await AdminService.getAdminById(
+    req.validated.params.id as TGetAdminByIdDto['params']['id']
+  );
+  res.success(HttpStatus.Ok, response);
+};
+
+export const createAdmin = async (req: Request, res: Response) => {
+  const response = await AdminService.createAdmin(req.validated.body as TCreateAdminDto['body']);
+  res.success(HttpStatus.Created, response);
+};
+
+export const updateAdmin = async (req: Request, res: Response) => {
+  const response = await AdminService.updateAdmin(
+    req.validated.params.id as TUpdateAdminDto['params']['id'],
+    req.validated.body as TUpdateAdminDto['body'],
+    req.admin!.adminId
+  );
+  res.success(HttpStatus.Ok, response);
+};
+
+export const deleteAdmin = async (req: Request, res: Response) => {
+  await AdminService.deleteAdmin(
+    req.validated.params.id as TDeleteAdminDto['params']['id'],
+    req.admin!.adminId
+  );
+  res.success(HttpStatus.Ok, { message: 'Admin deleted successfully' });
 };
