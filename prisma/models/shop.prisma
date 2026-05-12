@@ -1,0 +1,33 @@
+model Shop {
+  id           String            @id @default(uuid())
+  slug         String            @unique @db.VarChar(100)
+  logo         String?           @db.VarChar(255)
+  coverImage   String?           @map("cover_image") @db.VarChar(255)
+  phone        String?           @db.VarChar(20)
+  address      String?           @db.VarChar(255)
+  latitude     Float?
+  longitude    Float?
+  status       Int               @default(1) @db.SmallInt // 1=active, -1=inactive
+  admins       Admin[]
+  translations ShopTranslation[]
+  flowers      Flower[]
+  createdAt    DateTime          @default(now()) @map("created_at")
+  updatedAt    DateTime          @updatedAt @map("updated_at")
+  deletedAt    DateTime?         @map("deleted_at")
+
+  @@index([status])
+  @@index([createdAt(sort: Desc)])
+  @@map("shops")
+}
+
+model ShopTranslation {
+  id          String @id @default(uuid())
+  shopId      String @map("shop_id")
+  language    String @db.VarChar(5) // uz, ru, en
+  name        String @db.VarChar(100)
+  description String? @db.Text
+  shop        Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@unique([shopId, language])
+  @@map("shop_translations")
+}

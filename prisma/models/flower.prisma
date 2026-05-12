@@ -1,0 +1,33 @@
+model Flower {
+  id           String              @id @default(uuid())
+  shopId       String              @map("shop_id")
+  categoryId   String?             @map("category_id")
+  price        Float
+  discountPrice Float?             @map("discount_price")
+  images       String[]            // array of image paths
+  status       Int                 @default(1) @db.SmallInt // 1=active, -1=inactive
+  shop         Shop                @relation(fields: [shopId], references: [id])
+  category     Category?           @relation(fields: [categoryId], references: [id])
+  translations FlowerTranslation[]
+  createdAt    DateTime            @default(now()) @map("created_at")
+  updatedAt    DateTime            @updatedAt @map("updated_at")
+  deletedAt    DateTime?           @map("deleted_at")
+
+  @@index([shopId])
+  @@index([categoryId])
+  @@index([status])
+  @@index([createdAt(sort: Desc)])
+  @@map("flowers")
+}
+
+model FlowerTranslation {
+  id          String @id @default(uuid())
+  flowerId    String @map("flower_id")
+  language    String @db.VarChar(5)
+  name        String @db.VarChar(100)
+  description String? @db.Text
+  flower      Flower @relation(fields: [flowerId], references: [id], onDelete: Cascade)
+
+  @@unique([flowerId, language])
+  @@map("flower_translations")
+}

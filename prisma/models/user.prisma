@@ -1,0 +1,14 @@
+model User {
+  id         String    @id @default(uuid())
+  tgId       String    @unique @map("tg_id")
+  firstName  String?   @map("first_name") @db.VarChar(100)
+  lastName   String?   @map("last_name") @db.VarChar(100)
+  username   String?   @db.VarChar(100)
+  language   String    @default("uz") @db.VarChar(5)
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  deletedAt  DateTime? @map("deleted_at")
+
+  @@index([createdAt(sort: Desc)])
+  @@map("users")
+}
