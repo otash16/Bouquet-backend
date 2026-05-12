@@ -1,0 +1,45 @@
+model Tariff {
+  id            String              @id @default(uuid())
+  price         Int                 // so'm
+  durationDays  Int                 @map("duration_days")
+  flowerLimit   Int                 @default(0) @map("flower_limit") // 0 = cheksiz
+  status        Int                 @default(1) @db.SmallInt // 1=active, -1=inactive
+  translations  TariffTranslation[]
+  subscriptions Subscription[]
+  createdAt     DateTime            @default(now()) @map("created_at")
+  updatedAt     DateTime            @updatedAt @map("updated_at")
+  deletedAt     DateTime?           @map("deleted_at")
+
+  @@map("tariffs")
+}
+
+model TariffTranslation {
+  id          String @id @default(uuid())
+  tariffId    String @map("tariff_id")
+  language    String @default("uz") @db.VarChar(5)
+  name        String @db.VarChar(100)
+  description String @db.Text
+  tariff      Tariff @relation(fields: [tariffId], references: [id], onDelete: Cascade)
+
+  @@unique([tariffId, language])
+  @@map("tariff_translations")
+}
+
+model Subscription {
+  id        String    @id @default(uuid())
+  shopId    String    @map("shop_id")
+  tariffId  String    @map("tariff_id")
+  startDate DateTime  @map("start_date")
+  endDate   DateTime  @map("end_date")
+  status    Int       @default(1) @db.SmallInt // 1=active, -1=inactive, -2=expired
+  shop      Shop      @relation(fields: [shopId], references: [id])
+  tariff    Tariff    @relation(fields: [tariffId], references: [id])
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@index([shopId])
+  @@index([endDate])
+  @@index([createdAt(sort: Desc)])
+  @@map("subscriptions")
+}

@@ -18,6 +18,12 @@ export enum ErrorCodes {
   FlowerNotFound = 'FLOWER_NOT_FOUND',
   // Category
   CategoryNotFound = 'CATEGORY_NOT_FOUND',
+  // Tariff
+  TariffNotFound = 'TARIFF_NOT_FOUND',
+  // Subscription
+  SubscriptionNotFound = 'SUBSCRIPTION_NOT_FOUND',
+  SubscriptionRequired = 'SUBSCRIPTION_REQUIRED',
+  FlowerLimitReached = 'FLOWER_LIMIT_REACHED',
 }
 
 export enum ErrorMessages {
@@ -38,6 +44,12 @@ export enum ErrorMessages {
   FlowerNotFound = 'Flower not found',
   // Category
   CategoryNotFound = 'Category not found',
+  // Tariff
+  TariffNotFound = 'Tariff not found',
+  // Subscription
+  SubscriptionNotFound = 'Subscription not found',
+  SubscriptionRequired = 'Active subscription required to perform this action',
+  FlowerLimitReached = 'Flower limit reached for your subscription plan',
 }
 
 export enum ValidationErrorCodes {

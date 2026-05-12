@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { validationHandler } from '../../../middlewares/index.ts';
 import { catchAsync } from '../../../utilities/index.ts';
+import subscriptionGuard from '../../shared/middlewares/subscriptionGuard.ts';
 import * as FlowerController from './flower.controller.ts';
 import {
   createFlowerDto,
@@ -14,7 +15,14 @@ const router = Router();
 
 router.get('/', validationHandler(getFlowersDto), catchAsync(FlowerController.getFlowers));
 router.get('/:id', validationHandler(getFlowerByIdDto), catchAsync(FlowerController.getFlowerById));
-router.post('/', validationHandler(createFlowerDto), catchAsync(FlowerController.createFlower));
+
+// Gul yaratishda subscription tekshiriladi
+router.post(
+  '/',
+  subscriptionGuard,
+  validationHandler(createFlowerDto),
+  catchAsync(FlowerController.createFlower)
+);
 router.patch('/:id', validationHandler(updateFlowerDto), catchAsync(FlowerController.updateFlower));
 router.delete(
   '/:id',

@@ -8,9 +8,10 @@ model Shop {
   latitude     Float?
   longitude    Float?
   status       Int               @default(1) @db.SmallInt // 1=active, -1=inactive
-  admins       Admin[]
-  translations ShopTranslation[]
-  flowers      Flower[]
+  admins        Admin[]
+  translations  ShopTranslation[]
+  flowers       Flower[]
+  subscriptions Subscription[]
   createdAt    DateTime          @default(now()) @map("created_at")
   updatedAt    DateTime          @updatedAt @map("updated_at")
   deletedAt    DateTime?         @map("deleted_at")
