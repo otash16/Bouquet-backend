@@ -16,6 +16,8 @@ import type {
 // ===== AUTH =====
 
 export const signin = async (req: Request, res: Response) => {
+  console.log('SIGNIN CONTROLLER CALLED');
+  console.log('validated:', JSON.stringify(req.validated));
   const { username, password } = req.validated.body as TSigninDto['body'];
 
   const { refresh, access } = await AdminAuthService.signin({

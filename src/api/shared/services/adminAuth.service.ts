@@ -25,9 +25,13 @@ export const signin = async (data: ISigninData) => {
     },
   });
 
+  console.log('signin: admin found:', admin?.id, 'username:', username);
+
   // Timing attack oldini olish uchun har doim parolni solishtirish
   const hashToCompare = admin?.passwordHash ?? DUMMY_HASH;
   const isPasswordValid = await comparePasswords(password, hashToCompare);
+
+  console.log('signin: password valid:', isPasswordValid);
 
   if (!admin || !isPasswordValid) {
     throw new UnauthorizedError();
